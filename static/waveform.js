@@ -9,10 +9,10 @@ export class Waveform {
         this.displayDataL = [];
         this.displayDataR = [];
         this.displayColor = [];
-        this.displayScaling = 128;
     }
-    setWidth() {
-        this.canvas.width = this.cell.offsetWidth - 36;
+    setDimensions(height) {
+        this.canvas.width = window.innerWidth - 36;
+        this.canvas.height = height;
         this.displayDataL = [];
         this.displayDataR = [];
         for (let k = 0; k < this.canvas.width; k++) {
@@ -20,6 +20,13 @@ export class Waveform {
             this.displayDataR.push(0);
             this.displayColor.push("#000000");
         }
+        this.center_data_l = this.canvas.height/4;
+        this.center_data_r = 3*this.canvas.height/4;
+        // Fit the entire +/- 32768 range into L and R regions.
+        this.displayScaling = this.canvas.height/32768 / 4;
+        // Expect typical signals in the range of
+        // +/- about 3000 so scale by 10.
+        this.displayScaling *= 10;
     }
     draw(data_from_server) {
 
@@ -39,9 +46,9 @@ export class Waveform {
         let recording_now = data_from_server['recording_now']
         for (let k = 0; k < data_l.length; k++) {
             this.displayDataL.shift();
-            this.displayDataL.push(data_l[k]/this.displayScaling);
+            this.displayDataL.push(data_l[k]*this.displayScaling);
             this.displayDataR.shift();
-            this.displayDataR.push(data_r[k]/this.displayScaling);
+            this.displayDataR.push(data_r[k]*this.displayScaling);
             this.displayColor.shift();
             if (recording_now) 
                 this.displayColor.push("#FF0000");  // Red.
@@ -49,10 +56,29 @@ export class Waveform {
                 this.displayColor.push("#000000");  // Black.
         }
 
-        // Draw left and right waveforms. Offset them vertically.
-        this.drawWaveform(this.displayDataL, 50);
-        this.drawWaveform(this.displayDataR, 100);
+        // Draw left and right channel waveforms. Offset them vertically.
+        this.drawWaveform(this.displayDataL, this.center_data_l);
+        this.drawWaveform(this.displayDataR, this.center_data_r);
 
+        // Draw ranges that the signal must meet in order to trigger a capture.
+        let range = data_from_server['range'];
+        this.drawRange( range[0]*this.displayScaling + this.center_data_l);
+        this.drawRange( range[1]*this.displayScaling + this.center_data_l);
+        this.drawRange(-range[0]*this.displayScaling + this.center_data_l);
+        this.drawRange(-range[1]*this.displayScaling + this.center_data_l);
+        this.drawRange( range[0]*this.displayScaling + this.center_data_r);
+        this.drawRange( range[1]*this.displayScaling + this.center_data_r);
+        this.drawRange(-range[0]*this.displayScaling + this.center_data_r);
+        this.drawRange(-range[1]*this.displayScaling + this.center_data_r);
+
+    }
+    drawRange(rangeValue) {
+        this.context.linewidth = 1;
+        this.context.strokeStyle = "#A0A0A0";
+        this.context.beginPath();
+        this.context.moveTo(0, rangeValue);
+        this.context.lineTo(this.canvas.width, rangeValue);
+        this.context.stroke();
     }
     // Draw the waveforms. And, when switching colors need to end the
     // present path, stroke, then start a new path.

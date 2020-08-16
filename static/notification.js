@@ -7,7 +7,7 @@ export class Notification {
         this.context = this.canvas.getContext("2d");
         this.cell = document.getElementById("Notification");
     }
-    setWidth() {
+    setDimensions() {
         this.canvas.width = this.cell.offsetWidth - 36;
     }
     draw(data_from_server, recordStatusMessage) {

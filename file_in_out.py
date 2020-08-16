@@ -6,12 +6,13 @@ import os
 class FileInOut:
 
     def __init__(self, sample_rate):
-        self.recording_seconds = 0
+        self.recorded_seconds = 0
         self.successfully_opened_write_file = False
         self.sample_rate = sample_rate
 
     def open_file(self, directory, fname_l, fname_r, read_mode):
-        self.recording_seconds = 0
+        self.recorded_seconds = 0
+        self.last_wrote_peak = 0
         if not os.path.exists(directory):
             os.makedirs(directory)
         path_plus_name_l = directory + '\\' + fname_l
@@ -28,7 +29,6 @@ class FileInOut:
         return self.successfully_opened_write_file
     
     def close_file(self):
-        self.recording_seconds = 0
         if self.successfully_opened_write_file:
             try:
                 self.write_fp_l.close()
@@ -39,12 +39,23 @@ class FileInOut:
                     return False
             except:
                 return False
+        else:
+            return False
 
-    # Saving as text files for now.
-    def save(self, data_l, data_r):
+    # Its easier to work with text files and if need to save disk
+    # space can just compress the folder separately.
+    # TODO - The corner case of the file save taking longer to complete
+    # than the next audio data set arriving is not considered!
+    # It works fine on my computers.... for now.
+    def write(self, data_l, data_r):
         if self.successfully_opened_write_file:
-            self.recording_seconds = \
-                self.recording_seconds + data_l.shape[0] / self.sample_rate
+            self.recorded_seconds += data_l.shape[0] / self.sample_rate
             np.savetxt(self.write_fp_l, data_l)
             np.savetxt(self.write_fp_r, data_r)
-        return self.recording_seconds
+            self.last_wrote_peak = max(np.absolute(data_l))
+
+    def get_last_wrote_peak(self):
+        return self.last_wrote_peak
+
+    def get_record_seconds(self):
+        return self.recorded_seconds

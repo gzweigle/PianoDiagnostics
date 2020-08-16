@@ -1,3 +1,2 @@
-data/
-design/
 __pycache__
+static/bootstrap*

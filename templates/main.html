@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" href="static/bootstrap-4.0.0-dist/css/bootstrap.min.css">
+        <link rel="stylesheet" href="static/main.css">
+        <script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js" integrity="sha256-yr4fRk/GU1ehYJPAs8P4JlTgu0Hdsp4ZKrx8bDEDC3I=" crossorigin="anonymous"></script>
+        <script src="{{url_for('static', filename='main.js')}}" type="module"></script>
+    </head>
+    <body>
+        <div class="container">
+            <div class="row">
+                <div class="col-xl-12">
+                    <canvas id="canvasTitlebar"></canvas>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xl-2">
+                    <div>Directory Name</div>
+                    <input class="form-control-sm small-form" id="recordInput" placeholder="">
+                </div>
+                <div class="col-xl-2">
+                    <div>Start Note</div>
+                    <input class="form-control-sm small-form" id="recordStartNote" placeholder="">
+                </div>
+                <div class="col-xl-1">
+                    <div>&nbsp;</div>
+                    <button type="button" class="btn btn-sm btn-primary" id="recordButton">Start</button>
+                </div>
+                <div class="col-xl-1">
+                    <div>&nbsp;</div>
+                    <button type="button" class="btn btn-sm btn-primary" id="recordMidiButton">User</button>
+                </div>
+                <div class="col-xl-6" id="Notification">
+                    <canvas id="canvasNotification"></canvas>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xl-12" id="Waveform">
+                    <canvas id="canvasWaveform"></canvas>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

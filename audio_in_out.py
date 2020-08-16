@@ -23,14 +23,14 @@ class AudioInOut:
                 channels = self.channels,
                 rate = self.rate,
                 input = True,
-                output = True,  # Only needed for playback but set True always.
+                output = True,
                 frames_per_buffer = self.chunk,
                 stream_callback = self.callback)
             self.stream.start_stream()
         self.audio_driver_is_running = True
 
     # Received values are integers in range [-32768, 32767].
-    # Channels are interleaved.
+    # Channels are interleaved, first right then left.
     def get_data_from_audio_driver(self):
         self.start_driver_if_not_already_started()
         valid = False

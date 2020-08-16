@@ -1,7 +1,9 @@
 # Gregary C. Zweigle
 # 2020
 
-# All this does is create and increment file names.
+MAX_PIANO_NOTE = 88
+
+# TODO - Should this move elsewhere?
 class FileName:
 
     def __init__(self):
@@ -21,3 +23,14 @@ class FileName:
 
     def get_file_name(self):
         return (self.file_name_l, self.file_name_r)
+
+    def check_if_finished_all_notes(self):
+        if self.note_number > MAX_PIANO_NOTE:
+            return True
+        else:
+            return False
+
+    # TODO - Originally it seemed like a good idea to track
+    # notes in this class, but its too unrelated, need to move out.
+    def get_note_number(self):
+        return self.note_number

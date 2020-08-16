@@ -1,7 +1,6 @@
 % Gregary C. Zweigle, 2020
-
+%
 % This is an initial version of Matlab to match and plot two signals.
-
 clear;
 
 % The chunk size is the most these signals could not overlap.

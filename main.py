@@ -26,9 +26,7 @@ def server_function(message):
     message['recordMode'],
     message['recordDirectory'],
     message['recordStartNote'],
-    message['playbackMode'],
-    message['playbackDirectory'],
-    message['playbackStartNote'])
+    message['recordMidi'])
 
 if __name__ == '__main__':
     socket_io.run(app, port=5000, debug=True)
